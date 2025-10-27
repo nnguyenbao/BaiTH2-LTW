@@ -1,24 +1,52 @@
 import React from "react";
-import {Typography} from "@mui/material";
+import { Typography, Card, CardContent, Button, Box } from "@mui/material";
+
+import { useParams, Link as RouterLink } from "react-router-dom";
+import models from "../../modelData/models";
 
 import "./styles.css";
-import {useParams} from "react-router-dom";
 
-/**
- * Define UserDetail, a React component of Project 4.
- */
 function UserDetail() {
-    const user = useParams();
-    return (
-        <>
-          <Typography variant="body1">
-            This should be the UserDetail view of the PhotoShare app. Since it is
-            invoked from React Router the params from the route will be in property match.
-            So this should show details of user: {user.userId}.
-            You can fetch the model for the user from models.userModel.
-          </Typography>
-        </>
-    );
+  const { userId } = useParams();
+
+  const user = models.userModel(userId);
+
+  if (!user) {
+    return <Typography variant="h5">Không tìm thấy người dùng.</Typography>;
+  }
+
+  return (
+    <Card sx={{ maxWidth: 600, margin: "auto", mt: 4 }}>
+      <CardContent>
+        <Typography variant="h4" component="div" gutterBottom>
+          {user.first_name} {user.last_name}
+        </Typography>
+
+        <Typography variant="body1" color="text.secondary" gutterBottom>
+          <strong>Vị trí:</strong> {user.location}
+        </Typography>
+
+        <Typography variant="body1" color="text.secondary" gutterBottom>
+          <strong>Nghề nghiệp:</strong> {user.occupation}
+        </Typography>
+
+        <Typography variant="body1" color="text.secondary" paragraph>
+          <strong>Mô tả:</strong> {user.description}
+        </Typography>
+
+        <Box sx={{ mt: 2, textAlign: "center" }}>
+          <Button
+            variant="contained"
+            color="primary"
+            component={RouterLink}
+            to={`/photos/${user._id}`}
+          >
+            Xem ảnh của {user.first_name}
+          </Button>
+        </Box>
+      </CardContent>
+    </Card>
+  );
 }
 
 export default UserDetail;
